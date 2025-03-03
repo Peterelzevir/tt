@@ -2,10 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import ReactPlayer from 'react-player';
-import { FiDownload, FiCopy, FiCheck, FiLoader, FiMusic, FiUser, FiHeart, FiMessageCircle, FiShare2, FiInfo } from 'react-icons/fi';
+import { FiDownload, FiCopy, FiCheck, FiLoader, FiMusic, FiUser, FiHeart, FiMessageCircle, FiShare2, FiInfo, FiSave } from 'react-icons/fi';
 import { fetchTikTokData, downloadVideo, formatNumber, formatDate } from './download';
 
-// Animations configuration
+// Konfigurasi animasi
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
@@ -26,7 +26,7 @@ const pulse = {
   transition: { duration: 1.5, repeat: Infinity }
 };
 
-// ScrollReveal component for animation on scroll
+// Komponen ScrollReveal untuk animasi pada scroll
 const ScrollReveal = ({ children }) => {
   const [ref, inView] = useInView({
     triggerOnce: false,
@@ -45,7 +45,7 @@ const ScrollReveal = ({ children }) => {
   );
 };
 
-// Custom FiCalendar component since it's not included in react-icons/fi
+// Komponen FiCalendar kustom
 const FiCalendar = (props) => (
   <svg
     stroke="currentColor"
@@ -66,7 +66,7 @@ const FiCalendar = (props) => (
   </svg>
 );
 
-// Main TikTok Downloader Component
+// Komponen Utama TikTok Downloader
 const TikTokDownloader = () => {
   const [url, setUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -74,12 +74,13 @@ const TikTokDownloader = () => {
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
   const [activeDownload, setActiveDownload] = useState(null);
+  const [downloadSuccess, setDownloadSuccess] = useState(false);
   const headerRef = useRef(null);
   
-  // Handle URL input change
+  // Menangani perubahan input URL
   const handleInputChange = (e) => {
     setUrl(e.target.value);
-    // Reset previous results when input changes
+    // Reset hasil sebelumnya ketika input berubah
     if (videoData) {
       setVideoData(null);
     }
@@ -88,17 +89,17 @@ const TikTokDownloader = () => {
     }
   };
 
-  // Handle form submission
+  // Menangani pengiriman formulir
   const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (!url) {
-      setError('Please enter a TikTok URL');
+      setError('Harap masukkan URL TikTok');
       return;
     }
     
     if (!url.includes('tiktok.com')) {
-      setError('Please enter a valid TikTok URL');
+      setError('Harap masukkan URL TikTok yang valid');
       return;
     }
     
@@ -111,7 +112,7 @@ const TikTokDownloader = () => {
       
       if (result.success) {
         setVideoData(result.data);
-        // Scroll to results after loading
+        // Scroll ke hasil setelah loading
         setTimeout(() => {
           window.scrollTo({
             top: headerRef.current.offsetHeight,
@@ -119,33 +120,47 @@ const TikTokDownloader = () => {
           });
         }, 500);
       } else {
-        setError(result.message || 'Failed to fetch video data');
+        setError(result.message || 'Gagal mengambil data video');
       }
     } catch (err) {
-      setError('Server error, please try again later');
+      setError('Kesalahan server, silakan coba lagi nanti');
       console.error(err);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Handle video download
+  // Fungsi untuk mengunduh video langsung ke perangkat
   const handleDownload = (url, type) => {
     setActiveDownload(type);
+    
+    // Membuat link unduhan
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `tiktok-${type}-${Date.now()}.mp4`);
+    link.setAttribute('target', '_blank');
+    document.body.appendChild(link);
+    
+    // Memulai unduhan
     setTimeout(() => {
-      downloadVideo(url, `tiktok-${type}-${Date.now()}.mp4`);
+      link.click();
+      document.body.removeChild(link);
       setActiveDownload(null);
+      
+      // Menampilkan pesan sukses
+      setDownloadSuccess(true);
+      setTimeout(() => setDownloadSuccess(false), 3000);
     }, 1000);
   };
 
-  // Handle copying URL to clipboard
+  // Menangani penyalinan URL ke clipboard
   const handleCopy = (url) => {
     navigator.clipboard.writeText(url);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
-  // Scroll to top button visibility
+  // Visibilitas tombol scroll ke atas
   const [showScrollTop, setShowScrollTop] = useState(false);
   
   useEffect(() => {
@@ -157,7 +172,7 @@ const TikTokDownloader = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Scroll to top functionality
+  // Fungsi scroll ke atas
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
@@ -166,7 +181,7 @@ const TikTokDownloader = () => {
   };
 
   return (
-    <div className="min-h-screen text-white overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white overflow-hidden">
       {/* Header */}
       <header ref={headerRef} className="relative overflow-hidden">
         <motion.div 
@@ -186,11 +201,11 @@ const TikTokDownloader = () => {
               TikTok Downloader
             </h1>
             <p className="text-xl md:text-2xl text-purple-200 max-w-2xl mx-auto mb-8">
-              Download TikTok videos without watermark in HD quality
+              Unduh video TikTok tanpa watermark dengan kualitas HD
             </p>
           </motion.div>
 
-          {/* Search Form */}
+          {/* Form Pencarian */}
           <motion.form 
             onSubmit={handleSubmit}
             initial={{ y: 50, opacity: 0 }}
@@ -203,7 +218,7 @@ const TikTokDownloader = () => {
                 type="text"
                 value={url}
                 onChange={handleInputChange}
-                placeholder="Paste TikTok video URL here..."
+                placeholder="Tempel URL video TikTok di sini..."
                 className="flex-grow p-4 pl-6 bg-transparent text-white placeholder-purple-300 outline-none border-none rounded-xl"
               />
               <motion.button
@@ -222,7 +237,7 @@ const TikTokDownloader = () => {
                     <FiLoader className="mr-2 inline" />
                   </motion.span>
                 ) : (
-                  'Download'
+                  'Unduh'
                 )}
               </motion.button>
             </div>
@@ -238,7 +253,7 @@ const TikTokDownloader = () => {
             )}
           </motion.form>
           
-          {/* Floating shapes for decoration */}
+          {/* Bentuk mengambang untuk dekorasi */}
           <motion.div 
             animate={{ 
               y: [0, 15, 0],
@@ -266,9 +281,9 @@ const TikTokDownloader = () => {
         </div>
       </header>
 
-      {/* Loading animation */}
+      {/* Animasi Loading */}
       {isLoading && (
-        <div className="flex justify-center py-20">
+        <div className="flex flex-col items-center justify-center py-20">
           <motion.div 
             animate={{
               scale: [1, 1.2, 1],
@@ -280,10 +295,33 @@ const TikTokDownloader = () => {
             }}
             className="w-24 h-24 border-t-4 border-l-4 border-purple-500 rounded-full"
           />
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="mt-6 text-purple-300"
+          >
+            Memuat video TikTok...
+          </motion.p>
         </div>
       )}
 
-      {/* Results Section */}
+      {/* Pemberitahuan Unduhan Berhasil */}
+      <AnimatePresence>
+        {downloadSuccess && (
+          <motion.div
+            initial={{ y: 50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 50, opacity: 0 }}
+            className="fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-green-600 text-white px-6 py-3 rounded-full shadow-lg z-50 flex items-center"
+          >
+            <FiCheck className="mr-2" />
+            Video sedang diunduh ke perangkat Anda!
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Bagian Hasil */}
       <AnimatePresence>
         {videoData && !isLoading && (
           <motion.div
@@ -298,9 +336,9 @@ const TikTokDownloader = () => {
               animate="visible"
               className="bg-black/30 backdrop-blur-lg rounded-3xl overflow-hidden border border-purple-500/30 shadow-2xl"
             >
-              {/* Video Preview and Info */}
+              {/* Preview Video dan Info */}
               <div className="flex flex-col lg:flex-row">
-                {/* Video Preview */}
+                {/* Preview Video */}
                 <ScrollReveal>
                   <div className="lg:w-1/2 relative overflow-hidden">
                     <motion.div
@@ -323,7 +361,7 @@ const TikTokDownloader = () => {
                   </div>
                 </ScrollReveal>
 
-                {/* Video Info */}
+                {/* Info Video */}
                 <div className="lg:w-1/2 p-6">
                   <ScrollReveal>
                     <div className="flex items-center mb-6">
@@ -356,22 +394,22 @@ const TikTokDownloader = () => {
                     </div>
                   </ScrollReveal>
 
-                  {/* Download Buttons */}
+                  {/* Tombol Unduhan */}
                   <ScrollReveal>
                     <div className="space-y-4 mb-6">
-                      <h3 className="text-xl font-semibold mb-4">Download Options</h3>
+                      <h3 className="text-xl font-semibold mb-4">Pilihan Unduhan</h3>
                       
                       <motion.button
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        onClick={() => handleDownload(videoData.video_data.nwm_video_url, 'no-watermark')}
+                        onClick={() => handleDownload(videoData.video_data.nwm_video_url, 'tanpa-watermark')}
                         className="w-full py-3 px-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl flex items-center justify-between"
                       >
                         <span className="flex items-center">
                           <FiDownload className="mr-2" />
-                          Download Without Watermark
+                          Unduh Tanpa Watermark
                         </span>
-                        {activeDownload === 'no-watermark' ? (
+                        {activeDownload === 'tanpa-watermark' ? (
                           <motion.span animate={pulse}>
                             <FiLoader className="animate-spin" />
                           </motion.span>
@@ -383,14 +421,14 @@ const TikTokDownloader = () => {
                       <motion.button
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        onClick={() => handleDownload(videoData.video_data.wm_video_url, 'watermark')}
+                        onClick={() => handleDownload(videoData.video_data.wm_video_url, 'dengan-watermark')}
                         className="w-full py-3 px-4 bg-gradient-to-r from-indigo-600 to-blue-600 rounded-xl flex items-center justify-between"
                       >
                         <span className="flex items-center">
                           <FiDownload className="mr-2" />
-                          Download With Watermark
+                          Unduh Dengan Watermark
                         </span>
-                        {activeDownload === 'watermark' ? (
+                        {activeDownload === 'dengan-watermark' ? (
                           <motion.span animate={pulse}>
                             <FiLoader className="animate-spin" />
                           </motion.span>
@@ -407,7 +445,7 @@ const TikTokDownloader = () => {
                       >
                         <span className="flex items-center">
                           {copied ? <FiCheck className="mr-2" /> : <FiCopy className="mr-2" />}
-                          {copied ? 'Copied to clipboard!' : 'Copy video URL'}
+                          {copied ? 'Disalin ke clipboard!' : 'Salin URL video'}
                         </span>
                         <span className="text-sm bg-black/20 px-3 py-1 rounded-full">Link</span>
                       </motion.button>
@@ -420,11 +458,11 @@ const TikTokDownloader = () => {
         )}
       </AnimatePresence>
       
-      {/* How to Use Section */}
+      {/* Bagian Cara Menggunakan */}
       <div className="container mx-auto px-4 py-20">
         <ScrollReveal>
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 bg-gradient-to-r from-white to-purple-200 text-transparent bg-clip-text">
-            How to Download TikTok Videos
+            Cara Mengunduh Video TikTok
           </h2>
         </ScrollReveal>
         
@@ -435,8 +473,8 @@ const TikTokDownloader = () => {
               className="bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-purple-500/20"
             >
               <div className="w-16 h-16 flex items-center justify-center bg-purple-600 rounded-full mb-6 text-2xl">1</div>
-              <h3 className="text-xl font-bold mb-4">Copy TikTok Link</h3>
-              <p className="text-gray-300">Open TikTok app or website, find the video you want to download, and copy the share link.</p>
+              <h3 className="text-xl font-bold mb-4">Salin Link TikTok</h3>
+              <p className="text-gray-300">Buka aplikasi atau situs TikTok, temukan video yang ingin Anda unduh, dan salin link bagikan.</p>
             </motion.div>
           </ScrollReveal>
           
@@ -446,8 +484,8 @@ const TikTokDownloader = () => {
               className="bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-purple-500/20"
             >
               <div className="w-16 h-16 flex items-center justify-center bg-pink-600 rounded-full mb-6 text-2xl">2</div>
-              <h3 className="text-xl font-bold mb-4">Paste URL</h3>
-              <p className="text-gray-300">Paste the copied TikTok video URL into the input field above and click Download button.</p>
+              <h3 className="text-xl font-bold mb-4">Tempel URL</h3>
+              <p className="text-gray-300">Tempel URL video TikTok yang telah disalin ke dalam kolom input di atas dan klik tombol Unduh.</p>
             </motion.div>
           </ScrollReveal>
           
@@ -457,28 +495,28 @@ const TikTokDownloader = () => {
               className="bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-purple-500/20"
             >
               <div className="w-16 h-16 flex items-center justify-center bg-indigo-600 rounded-full mb-6 text-2xl">3</div>
-              <h3 className="text-xl font-bold mb-4">Download Video</h3>
-              <p className="text-gray-300">Preview the video and choose the download option you prefer - with or without watermark.</p>
+              <h3 className="text-xl font-bold mb-4">Unduh Video</h3>
+              <p className="text-gray-300">Pratinjau video dan pilih opsi unduhan yang Anda inginkan - dengan atau tanpa watermark.</p>
             </motion.div>
           </ScrollReveal>
         </div>
       </div>
       
-      {/* Features Section */}
+      {/* Bagian Fitur */}
       <div className="bg-gradient-to-b from-transparent to-black/40">
         <div className="container mx-auto px-4 py-20">
           <ScrollReveal>
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 bg-gradient-to-r from-white to-purple-200 text-transparent bg-clip-text">
-              Premium Features
+              Fitur Premium
             </h2>
           </ScrollReveal>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
-              { icon: FiHeart, title: "No Watermark", desc: "Remove TikTok watermark from videos" },
-              { icon: FiUser, title: "Free to Use", desc: "No registration or payment required" },
-              { icon: FiMessageCircle, title: "HD Quality", desc: "Download videos in high quality" },
-              { icon: FiShare2, title: "Unlimited Downloads", desc: "No restrictions on downloads" }
+              { icon: FiHeart, title: "Tanpa Watermark", desc: "Hapus watermark TikTok dari video" },
+              { icon: FiUser, title: "Gratis Digunakan", desc: "Tanpa registrasi atau pembayaran" },
+              { icon: FiMessageCircle, title: "Kualitas HD", desc: "Unduh video dengan kualitas tinggi" },
+              { icon: FiShare2, title: "Unduhan Tak Terbatas", desc: "Tanpa batasan jumlah unduhan" }
             ].map((feature, index) => (
               <ScrollReveal key={index}>
                 <motion.div 
@@ -495,31 +533,31 @@ const TikTokDownloader = () => {
         </div>
       </div>
       
-      {/* FAQ Section */}
+      {/* Bagian FAQ */}
       <div className="container mx-auto px-4 py-20">
         <ScrollReveal>
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 bg-gradient-to-r from-white to-purple-200 text-transparent bg-clip-text">
-            Frequently Asked Questions
+            Pertanyaan yang Sering Diajukan
           </h2>
         </ScrollReveal>
         
         <div className="max-w-3xl mx-auto space-y-6">
           {[
             { 
-              q: "Is it free to download TikTok videos?", 
-              a: "Yes, our service is completely free to use. You can download unlimited TikTok videos without any cost." 
+              q: "Apakah gratis untuk mengunduh video TikTok?", 
+              a: "Ya, layanan kami sepenuhnya gratis untuk digunakan. Anda dapat mengunduh video TikTok tanpa batas tanpa biaya apapun." 
             },
             { 
-              q: "Can I download TikTok videos without watermark?", 
-              a: "Yes, our downloader provides options to download videos with or without the TikTok watermark in high quality." 
+              q: "Bisakah saya mengunduh video TikTok tanpa watermark?", 
+              a: "Ya, downloader kami menyediakan opsi untuk mengunduh video dengan atau tanpa watermark TikTok dengan kualitas tinggi." 
             },
             { 
-              q: "Is it legal to download TikTok videos?", 
-              a: "Downloading videos for personal use is generally acceptable, but redistributing or using them commercially without permission may violate copyright laws." 
+              q: "Apakah legal untuk mengunduh video TikTok?", 
+              a: "Mengunduh video untuk penggunaan pribadi umumnya dapat diterima, tetapi mendistribusikan ulang atau menggunakannya secara komersial tanpa izin dapat melanggar hukum hak cipta." 
             },
             { 
-              q: "Why can't I download some TikTok videos?", 
-              a: "Some videos may be private or from accounts with restricted sharing settings, which can prevent our service from accessing them." 
+              q: "Mengapa saya tidak dapat mengunduh beberapa video TikTok?", 
+              a: "Beberapa video mungkin bersifat pribadi atau dari akun dengan pengaturan berbagi terbatas, yang dapat mencegah layanan kami mengaksesnya." 
             }
           ].map((faq, index) => (
             <ScrollReveal key={index}>
@@ -541,12 +579,13 @@ const TikTokDownloader = () => {
       {/* Footer */}
       <footer className="bg-black/50 backdrop-blur-md py-10">
         <div className="container mx-auto px-4 text-center">
-          <p className="text-gray-400">© 2025 TikTok Downloader. Not affiliated with TikTok.</p>
-          <p className="text-gray-500 text-sm mt-2">This service is for personal use only.</p>
+          <p className="text-gray-400">© 2025 TikTok Downloader. Tidak berafiliasi dengan TikTok.</p>
+          <p className="text-gray-500 text-sm mt-2">Layanan ini hanya untuk penggunaan pribadi.</p>
+          <p className="text-purple-400 text-sm mt-4">by peter</p>
         </div>
       </footer>
       
-      {/* Scroll to top button */}
+      {/* Tombol scroll ke atas */}
       <AnimatePresence>
         {showScrollTop && (
           <motion.button
