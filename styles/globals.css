@@ -1,104 +1,382 @@
-/* Tailwind directives */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Tailwind directives */ 
+@tailwind base; 
+@tailwind components; 
+@tailwind utilities; 
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 10px;
-}
+/* Custom scrollbar - Upgraded with smoother transitions */ 
+::-webkit-scrollbar { 
+  width: 12px; 
+} 
 
-::-webkit-scrollbar-track {
-  background: rgba(30, 27, 75, 0.5);
-}
-
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #9333ea, #ec4899);
+::-webkit-scrollbar-track { 
+  background: rgba(13, 10, 37, 0.7);
   border-radius: 10px;
-}
+} 
 
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(to bottom, #a855f7, #db2777);
-}
+::-webkit-scrollbar-thumb { 
+  background: linear-gradient(to bottom, #9333ea, #ec4899); 
+  border-radius: 10px;
+  border: 2px solid rgba(13, 10, 37, 0.7);
+  transition: all 0.3s ease;
+} 
 
-/* Global styles */
-body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  color: white;
-  background-color: #0f0118;
+::-webkit-scrollbar-thumb:hover { 
+  background: linear-gradient(to bottom, #a855f7, #db2777); 
+} 
+
+/* Global styles - Enhanced typography and colors */ 
+body { 
+  font-family: 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, 
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; 
+  color: white; 
+  background: linear-gradient(135deg, #0f0118 0%, #1e0a3c 100%);
+  background-attachment: fixed;
   overflow-x: hidden;
+  letter-spacing: 0.015em;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+} 
+
+/* Enhanced animation classes with more varieties */
+.animate-float { 
+  animation: float 6s ease-in-out infinite; 
+} 
+
+.animate-float-slow { 
+  animation: float 10s ease-in-out infinite; 
 }
 
-/* Animation classes */
-.animate-float {
-  animation: float 6s ease-in-out infinite;
+.animate-float-fast { 
+  animation: float 3s ease-in-out infinite; 
 }
 
-.animate-pulse-slow {
-  animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+.animate-pulse-slow { 
+  animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite; 
+} 
+
+.animate-pulse-fast { 
+  animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite; 
 }
 
-/* Custom animations */
-@keyframes float {
-  0% {
-    transform: translateY(0px);
+.animate-rotate {
+  animation: rotate 10s linear infinite;
+}
+
+.animate-shimmer {
+  animation: shimmer 2.5s ease-in-out infinite;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 200% 100%;
+}
+
+/* Enhanced animations */ 
+@keyframes float { 
+  0% { 
+    transform: translateY(0px) rotate(0deg); 
+  } 
+  50% { 
+    transform: translateY(-20px) rotate(2deg); 
+  } 
+  100% { 
+    transform: translateY(0px) rotate(0deg); 
+  } 
+} 
+
+@keyframes pulse { 
+  0%, 100% { 
+    opacity: 1;
+    transform: scale(1);
+  } 
+  50% { 
+    opacity: 0.7;
+    transform: scale(0.98);
+  } 
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
   }
-  50% {
-    transform: translateY(-20px);
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
   }
   100% {
-    transform: translateY(0px);
+    background-position: -200% 0;
   }
 }
 
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
+/* Advanced gradient text utilities with multiple options */ 
+.text-gradient { 
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-500; 
 }
 
-/* Gradient text utility */
-.text-gradient {
-  @apply bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-500;
+.text-gradient-blue {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-400;
 }
 
-/* Glass morphism effect */
-.glass {
-  @apply bg-white/10 backdrop-blur-md border border-white/20 shadow-xl;
+.text-gradient-gold {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-yellow-300 to-amber-500;
 }
 
-/* Custom image styles for avatar */
-.avatar-glow {
-  @apply border-2 border-purple-500;
+.text-gradient-neon {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-cyan-400;
+}
+
+/* Enhanced glass morphism effects with multiple variations */ 
+.glass { 
+  @apply bg-white/10 backdrop-blur-md border border-white/20 shadow-xl; 
+} 
+
+.glass-dark {
+  @apply bg-black/30 backdrop-blur-md border border-purple-500/30 shadow-xl;
+}
+
+.glass-purple {
+  @apply bg-purple-900/30 backdrop-blur-md border border-purple-500/40 shadow-xl;
+}
+
+.glass-pink {
+  @apply bg-pink-900/30 backdrop-blur-md border border-pink-500/40 shadow-xl;
+}
+
+/* Enhanced image styles for avatar with animation */ 
+.avatar-glow { 
+  @apply border-2 border-purple-500; 
   box-shadow: 0 0 15px rgba(168, 85, 247, 0.5);
+  transition: all 0.3s ease;
 }
 
-/* Custom button styles */
-.btn-gradient {
-  @apply bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium py-2 px-4 rounded-xl transition-all duration-300 shadow-lg shadow-purple-500/20 hover:shadow-purple-500/40;
+.avatar-glow:hover {
+  box-shadow: 0 0 25px rgba(168, 85, 247, 0.8);
+  transform: scale(1.05);
 }
 
-/* Input styles */
-input:focus {
-  box-shadow: 0 0 15px rgba(236, 72, 153, 0.4);
+/* Advanced button styles with hover effects */ 
+.btn-gradient { 
+  @apply bg-gradient-to-r from-purple-600 to-pink-600 text-white font-medium py-2 px-4 rounded-xl transition-all duration-300 shadow-lg shadow-purple-500/20; 
+  position: relative;
+  overflow: hidden;
 }
 
-/* Video player container */
-.video-container {
-  @apply relative overflow-hidden rounded-2xl;
-  box-shadow: 0 20px 50px rgba(91, 33, 182, 0.4);
+.btn-gradient:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: all 0.6s ease;
 }
 
-/* FiCalendar icon not defined in the component, so let's add a style for it */
-.FiCalendar {
-  @apply inline-block;
+.btn-gradient:hover {
+  @apply shadow-purple-500/40;
+  transform: translateY(-2px);
 }
 
-/* Add missing icon styles */
-.icon-calendar:before {
-  content: "📅";
+.btn-gradient:hover:before {
+  left: 100%;
 }
+
+.btn-gradient:active {
+  transform: translateY(1px);
+}
+
+.btn-blue-gradient {
+  @apply bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium py-2 px-4 rounded-xl transition-all duration-300 shadow-lg shadow-blue-500/20;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-blue-gradient:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: all 0.6s ease;
+}
+
+.btn-blue-gradient:hover {
+  @apply shadow-blue-500/40;
+  transform: translateY(-2px);
+}
+
+.btn-blue-gradient:hover:before {
+  left: 100%;
+}
+
+/* Enhanced input styles with animation */ 
+input {
+  transition: all 0.3s ease;
+}
+
+input:focus { 
+  box-shadow: 0 0 20px rgba(236, 72, 153, 0.5);
+  @apply outline-none;
+} 
+
+/* Improved video player container with stronger glow */ 
+.video-container { 
+  @apply relative overflow-hidden rounded-2xl; 
+  box-shadow: 0 20px 60px rgba(91, 33, 182, 0.6);
+  transition: all 0.5s ease;
+} 
+
+.video-container:hover {
+  box-shadow: 0 25px 70px rgba(91, 33, 182, 0.8);
+  transform: scale(1.02);
+}
+
+/* Enhanced tooltips */
+.tooltip {
+  @apply relative inline-block;
+}
+
+.tooltip .tooltip-text {
+  @apply invisible absolute z-10 p-2 text-sm text-white rounded-md bg-gray-900;
+  width: max-content;
+  max-width: 250px;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip:hover .tooltip-text {
+  @apply visible;
+  opacity: 1;
+}
+
+/* Loading spinner with glow effect */
+.loading-spinner {
+  @apply relative w-16 h-16 rounded-full;
+  border: 4px solid rgba(168, 85, 247, 0.2);
+  border-left-color: #a855f7;
+  animation: spinner 1s linear infinite;
+}
+
+.loading-spinner:before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.05);
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Custom badges */
+.badge {
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+}
+
+.badge-purple {
+  @apply bg-purple-100 text-purple-800;
+}
+
+.badge-pink {
+  @apply bg-pink-100 text-pink-800;
+}
+
+.badge-blue {
+  @apply bg-blue-100 text-blue-800;
+}
+
+/* Particle background effect */
+.particles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  animation: float 60s infinite;
+}
+
+/* Advanced card hover effects */
+.hover-card {
+  transition: all 0.3s ease;
+}
+
+.hover-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(91, 33, 182, 0.4);
+}
+
+/* Custom glow effects for elements */
+.glow-border {
+  @apply border border-purple-500;
+  box-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
+  transition: all 0.3s ease;
+}
+
+.glow-border:hover {
+  box-shadow: 0 0 25px rgba(168, 85, 247, 0.6);
+}
+
+/* Custom icon styles */
+.icon-calendar:before { 
+  content: "📅"; 
+}
+
+/* Neon text effect */
+.neon-text {
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.8),
+               0 0 10px rgba(168, 85, 247, 0.8),
+               0 0 15px rgba(168, 85, 247, 0.6),
+               0 0 20px rgba(168, 85, 247, 0.4);
+}
+
+/* Improved mobile responsiveness */
+@media (max-width: 640px) {
+  .glass, .glass-dark, .glass-purple, .glass-pink {
+    @apply backdrop-blur-sm bg-opacity-20;
+  }
+  
+  .btn-gradient, .btn-blue-gradient {
+    @apply py-3 px-4 text-sm;
+  }
+    }
